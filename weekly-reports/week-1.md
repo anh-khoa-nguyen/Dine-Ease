@@ -12,6 +12,8 @@
 | Thành viên | MSSV | Công việc | Link Commit/PR |
 |------------|------|-----------|----------------|
 | Nguyễn Anh Khoa | 2251052052 | Khởi tạo Github, setup cấu trúc thư mục, viết file Proposal (README.md), xác định các tính năng MVP cho phân hệ Admin | [9aa3613](https://github.com/anh-khoa-nguyen/Dine-Ease/commit/9aa36134068f9e62898d5be90770f26f8b1febdb) |
+| Nguyễn Thiện Đoan | 2251052019 | Thảo luận chọn đề tài, xác định các tính năng MVP cho phân hệ Nhà hàng | [i7j8k9l](https://github.com/anh-khoa-nguyen/Dine-Ease/commit/9a7d47112628bebd56def986d2f8fc0d91d79881) |
+
 
 ---
 
@@ -36,6 +38,7 @@
 | Thành viên | Công việc dự kiến |
 |------------|-------------------|
 | Nguyễn Anh Khoa | - Viết đặc tả Use Case chi tiết cho phân hệ **Admin**.<br>- Vẽ Wireframes UI cho trang Dashboard Admin.<br>- Trực tiếp commit phần đặc tả của mình vào file `docs/requirements.md` trên Github. |
+| Nguyễn Thiện Đoan | - Viết đặc tả Use Case chi tiết cho phân hệ **Nhà hàng**.<br>- Vẽ Wireframes UI cho trang Quản lý của Chủ nhà hàng.<br>- Trực tiếp commit phần đặc tả của mình vào file `docs/requirements.md` trên Github. |
 
 ---
 
