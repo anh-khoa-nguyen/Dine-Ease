@@ -49,3 +49,8 @@
 
 - [ ] **Khó khăn nội bộ:** Nhóm hiện tại chưa biết nên sử dụng công cụ nào để vẽ Wireframe đáp ứng được các tiêu chí: vẽ đẹp, thao tác hiệu quả và miễn phí.
 - [ ] **Câu hỏi cần GV giải đáp:** Thưa Thầy, ở phần phân tích yêu cầu, nhóm em có cần phải viết đặc tả chi tiết cho toàn bộ tất cả các Use Case của hệ thống không, hay chỉ cần tập trung đặc tả cho các Use Case quan trọng (cốt lõi) thôi ạ?
+
+---
+
+*Ngày nộp: 08/03/2026* <br>
+*Xác nhận của Nhóm trưởng: Nguyễn Anh Khoa*
