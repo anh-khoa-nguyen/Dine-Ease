@@ -25,7 +25,7 @@
 
 ---
 
-## 🛠️ PHÂN HỆ 1: ADMIN
+## PHÂN HỆ 1: ADMIN
 *Phân hệ lưu trữ thông tin tài khoản, phân quyền, hồ sơ cá nhân và hệ thống thông báo.*
 
 ### 1. Bảng `User` (Tài khoản)
@@ -82,3 +82,80 @@
 | `created_at` | int | | Thời gian nhận |
 
 ---
+
+## PHÂN HỆ 3: NGƯỜI DÙNG
+*Phân hệ xử lý luồng giao dịch cốt lõi: Đặt chỗ, giữ bàn, thanh toán tiền cọc, voucher và đánh giá.*
+
+### 20. Bảng `Reservation` (Đơn Đặt Bàn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `customer_id` | long | **FK** | Người đặt |
+| `restaurant_id` | int | **FK** | |
+| `status` | enum | | Trạng thái đơn (PENDING, COMPLETE...) |
+| `reservation_date`| date | | Ngày đến ăn |
+| `reservation_time`| time | | Giờ đến ăn |
+| `guest_count` | int | | Tổng số lượng khách |
+| `notes` | varchar | | Ghi chú yêu cầu đặc biệt |
+| `cancel_reason` | varchar | | Lý do hủy (nếu có) |
+| `deposit_amount` | double | | Số tiền cọc đã ghi nhận |
+| `final_total_amount`| double | | Tổng bill thực tế (Nhà hàng nhập) |
+| `commission_amount`| double | | Hoa hồng Admin trích lại từ đơn này |
+
+### 21. Bảng `ReservationTable` (Bảng N-N Đặt Bàn - Bàn thực tế)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `reservation_id`| int | **FK** | |
+| `table_id` | int | **FK** | Xếp 1 hoặc nhiều bàn cho 1 đơn đặt |
+
+### 22. Bảng `Payment` (Giao dịch Thanh toán)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `reservation_id`| int | **FK** | Đơn đặt bàn chứa giao dịch này |
+| `payment_type` | enum | | Phân loại (DEPOSIT, FINAL_PAYMENT) |
+| `payment_method`| enum | | Phương thức (MOMO, VNPAY, CASH) |
+| `status` | enum | | Trạng thái thanh toán (SUCCESS, FAILED) |
+| `amount` | double | | Số tiền giao dịch |
+| `transaction_code`| varchar | | Mã GD từ đối tác ví điện tử |
+| `created_at` | date | | Thời gian giao dịch |
+
+### 23. Bảng `Voucher` (Khuyến mãi)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | `0..1` (Null nếu là Voucher toàn sàn) |
+| `code` | varchar | Unique | Mã nhập (Ví dụ: GIAM50K) |
+| `discount_type` | enum | | Loại giảm (Cố định, Phần trăm) |
+| `discount_value`| double | | Mức giảm |
+| `min_order_value`| double | | Yêu cầu giá trị đơn tối thiểu |
+| `max_discount` | double | | Giảm tối đa bao nhiêu |
+| `start_date` | date | | Ngày bắt đầu hiệu lực |
+| `end_date` | date | | Ngày hết hạn |
+| `usage_limit` | int | | Số lượng mã tối đa được phát hành |
+
+### 24. Bảng `VoucherUsage` (Lịch sử sử dụng Voucher)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `voucher_id` | int | **FK** | |
+| `customer_id` | long | **FK** | Người đã dùng mã |
+| `reservation_id`| int | **FK** | Đơn đặt bàn áp dụng mã |
+| `discount_applied`| double | | Số tiền thực tế được giảm |
+
+### 25. Bảng `Review` (Đánh giá)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `reservation_id`| int | **FK** | Trỏ đến đơn đặt bàn (Mỗi đơn chỉ Review 1 lần) |
+| `rating` | int | | Số sao (1 đến 5) |
+| `comment` | varchar | | Nội dung đánh giá |
+| `reply_from_restaurant`| varchar | | Phản hồi từ phía nhà hàng |
+| `created_at` | date | | Thời gian đánh giá |
+
+### 26. Bảng `ReviewMedia` (Ảnh đính kèm Đánh giá)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `review_id` | int | **FK** | |
+| `media_url` | varchar | | URL hình ảnh / video |
