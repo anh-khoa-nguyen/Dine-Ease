@@ -108,20 +108,79 @@ Trừ các API được đánh dấu **Public**, tất cả các API khác đề
 ## 3. Phân Hệ Nhà Hàng (Business User)
 *Lưu ý: Bắt buộc Token có quyền `ROLE_RESTAURANT`. Backend tự động lấy `restaurant_id` từ Profile của nhân viên.*
 
-### 3.1. 
+### 3.1. Nhóm Quản lý Hồ sơ & Cấu hình (UC_RESTAURANT_01)
+*Controller gợi ý: `ManageRestaurantProfileController.java`*
 
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **GET** | `/manage/profile` | **Lấy hồ sơ quán:** (Tên, SĐT, địa chỉ, ảnh, config, giờ mở cửa).<br>*Return:* `RestaurantProfileDTO` |
+| **PUT** | `/manage/profile` | **Cập nhật thông tin cơ bản:**<br>`@Valid @RequestBody RestaurantUpdateDTO`<br>*(name, phone_contact, address, description)* |
+| **POST** | `/manage/images` | **Upload ảnh nhà hàng (Logo/Cover):**<br>`@RequestPart("file") MultipartFile file`<br>`@RequestParam boolean isPrimary` |
+| **DELETE**| `/manage/images/{imageId}` | **Xóa ảnh:**<br>`@PathVariable Long imageId` |
+| **PUT** | `/manage/operating-hours` | **Cập nhật Giờ mở cửa:**<br>`@Valid @RequestBody List<OperatingHourDTO>`<br>*(day_of_week, open_time, close_time)* |
+| **PUT** | `/manage/configs` | **Cập nhật Cấu hình (Cọc, Số người):**<br>`@Valid @RequestBody RestaurantConfigDTO`<br>*(require_deposit, deposit_type, deposit_value, max_pax_per_booking)* |
 
-### 3.2. 
+---
 
+### 3.2. Nhóm Quản lý Thực đơn (UC_RESTAURANT_02)
+*Controller gợi ý: `ManageMenuController.java`*
 
-### 3.3. 
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **GET** | `/manage/menu-categories` | **Lấy ds danh mục món ăn:** Khai vị, Món chính... |
+| **POST** | `/manage/menu-categories` | **Thêm danh mục:**<br>`@Valid @RequestBody MenuCategoryRequestDTO` (name, sort_order) |
+| **GET** | `/manage/menu-items` | **Lấy ds món ăn (Tìm kiếm/Lọc):**<br>`@RequestParam(required=false) Long categoryId`<br>`@RequestParam(required=false) String keyword`<br>`Pageable pageable` |
+| **POST** | `/manage/menu-items` | **Thêm món ăn mới (Form-data có file ảnh):**<br>`@RequestPart("data") @Valid MenuItemRequestDTO data`<br>`@RequestPart(value="image", required=false) MultipartFile image`<br>*(category_id, name, description, price, is_bestseller)* |
+| **PUT** | `/manage/menu-items/{itemId}` | **Sửa thông tin món ăn:** (Cấu trúc giống POST) |
+| **PATCH**| `/manage/menu-items/{itemId}/status`| **Bật/Tắt trạng thái bán (Hết hàng nhanh):**<br>`@PathVariable Long itemId`<br>`@RequestBody Map<String, String> body` (status: AVAILABLE / SOLD_OUT) |
+| **DELETE**| `/manage/menu-items/{itemId}` | **Xóa món ăn (Soft delete nếu đã có trong bill cũ):**<br>`@PathVariable Long itemId` |
 
+---
 
-### 3.4. 
+### 3.3. Nhóm Quản lý Sơ đồ Bàn (UC_RESTAURANT_03)
+*Controller gợi ý: `ManageTableController.java`*
 
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **GET** | `/manage/tables` | **Lấy toàn bộ sơ đồ bàn:** Danh sách bàn kèm `status` hiện tại (Trống, Đang ăn, Dọn dẹp). |
+| **POST** | `/manage/tables` | **Thêm bàn mới:**<br>`@Valid @RequestBody TableRequestDTO` (table_name, capacity) |
+| **PUT** | `/manage/tables/{tableId}` | **Sửa thông tin bàn:** Tên/Sức chứa. |
+| **PATCH**| `/manage/tables/{tableId}/status`| **Chuyển đổi trạng thái bàn (Dọn xong -> Trống):**<br>`@PathVariable Long tableId`<br>`@RequestParam String status` (AVAILABLE, CLEANING) |
+| **POST** | `/manage/table-groups` | **Gộp bàn (Merge):**<br>`@RequestBody TableGroupRequestDTO` (List<Long> table_ids, group_name) |
 
-### 3.5. 
+---
 
+### 3.4. Nhóm Quản lý Đặt bàn (Core Workflow - UC_RESTAURANT_03 & 04)
+*Controller gợi ý: `ManageReservationController.java`*
+
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **GET** | `/manage/reservations` | **Lấy ds Đơn đặt bàn (Lọc Kanban):**<br>`@RequestParam(required=false) @DateTimeFormat(iso=DATE) LocalDate date`<br>`@RequestParam(required=false) String status` (PENDING, CONFIRMED...)<br>`Pageable pageable` |
+| **GET** | `/manage/reservations/{id}` | **Xem chi tiết đơn:** (Thông tin khách, giờ, ghi chú, tiền đã cọc).<br>`@PathVariable Long id` |
+| **PATCH**| `/manage/reservations/{id}/approve` | **Nhà hàng xác nhận đơn mới:**<br>`@PathVariable Long id`<br>*Hệ thống chuyển status sang CONFIRMED hoặc AWAITING_DEPOSIT.* |
+| **PATCH**| `/manage/reservations/{id}/reject` | **Từ chối / Hủy đơn:**<br>`@PathVariable Long id`<br>`@RequestBody Map<String, String> body` (cancel_reason) |
+| **PATCH**| `/manage/reservations/{id}/assign-table`| **Xếp bàn trước cho khách:**<br>`@PathVariable Long id`<br>`@RequestParam Long tableId` |
+| **POST** | `/manage/reservations/{id}/check-in`| **Đón khách vào bàn (Check-in):**<br>`@PathVariable Long id`<br>*Chuyển status Đơn -> CHECKED_IN. Status Bàn -> OCCUPIED.* |
+
+---
+
+### 3.5. Nhóm Chốt Doanh Thu (UC_RESTAURANT_04)
+*Controller gợi ý: `ManageCheckoutController.java`. Đây là bước cuối cùng khi khách ăn xong.*
+
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **POST** | `/manage/reservations/{id}/complete`| **Hoàn tất đơn & Chốt doanh thu:**<br>`@PathVariable Long id`<br>`@Valid @RequestBody CheckoutRequestDTO`<br>*{ final_total_amount: 1500000, payment_method: "CASH", note: "..." }*<br>**Logic DB:** Backend tự tính tiền cần thu (Total - Deposit), tự tính Hoa hồng Admin (Total * Commission Rate), tạo Payment mới, chuyển đơn thành COMPLETED, Bàn thành CLEANING. |
+
+---
+
+### 6. Nhóm Báo cáo Doanh thu (UC_RESTAURANT_05)
+*Controller gợi ý: `ManageReportController.java`*
+
+| Method | Endpoint | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- |
+| **GET** | `/manage/reports/dashboard` | **Thẻ KPI Tổng quan:**<br>`@RequestParam @DateTimeFormat(iso=DATE) LocalDate startDate`<br>`@RequestParam @DateTimeFormat(iso=DATE) LocalDate endDate`<br>*Return:* Tổng doanh thu, Tổng đơn hoàn thành, Tỉ lệ hủy. |
+| **GET** | `/manage/reports/revenue-chart`| **Dữ liệu vẽ biểu đồ đường (Line Chart):**<br>*Params tương tự trên.*<br>*Return:* `List<DailyRevenueDTO>` (date, revenue, booking_count). |
+| **GET** | `/manage/reports/export` | **Xuất Excel báo cáo:**<br>*Params tương tự trên.*<br>*Return:* Trả về HTTP Response với Header `Content-Disposition: attachment; filename="bao-cao.xlsx"` và Body là Byte stream. |
 
 ---
 
