@@ -292,7 +292,9 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Hồ sơ nhà hàng](./screenshots/wireframe-rest-profile.png)
+![Wireframe Hồ sơ nhà hàng](./screenshots/wireframes/restaurant/restaurant-01-setting-restaurant-profile.png)
+
+![Wireframe Hồ sơ nhà hàng](./screenshots/wireframes/restaurant/restaurant-02-setting-restaurant-profile.png)
 
 **2. UC_RESTAURANT_02: Quản lý thực đơn**
 | Trường thông tin | Nội dung |
@@ -310,7 +312,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Quản lý thực đơn](./screenshots/wireframe-rest-menu.png)
+![Wireframe Quản lý thực đơn](./screenshots/wireframes/restaurant/restaurant-03-menu-management.png)
 
 **3. UC_RESTAURANT_03: Quản lý bàn (Sơ đồ bàn)**
 | Trường thông tin | Nội dung |
@@ -329,7 +331,8 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Sơ đồ bàn](./screenshots/wireframe-rest-tables.png)
+![Wireframe Sơ đồ bàn](./screenshots/wireframes/restaurant/restaurant-04-table-management.png)
+![Wireframe Sơ đồ bàn](./screenshots/wireframes/restaurant/restaurant-05-reservation-management.png.jpg)
 
 **4. UC_RESTAURANT_04: Quản lý thanh toán**
 | Trường thông tin | Nội dung |
@@ -348,7 +351,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Thanh toán POS](./screenshots/wireframe-rest-payment.png)
+![Wireframe Thanh toán POS](./screenshots/wireframes/restaurant/restaurant-06-checkout-billing.png.jpg)
 
 **5. UC_RESTAURANT_05: Báo cáo doanh thu**
 | Trường thông tin | Nội dung |
@@ -366,4 +369,4 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Báo cáo doanh thu](./screenshots/wireframe-rest-report.png)
+![Wireframe Báo cáo doanh thu](./screenshots/wireframes/restaurant/restaurant-07-dashboard.png.jpg)
