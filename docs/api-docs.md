@@ -39,22 +39,71 @@ Trừ các API được đánh dấu **Public**, tất cả các API khác đề
 ## 2. Phân Hệ Khách Hàng (End User)
 *Lưu ý: Các API không có tiền tố role. Backend tự động lấy `customer_id` từ Token.*
 
-### 2.1.
+### 2.1. Nhóm Auth & Profile (Xác thực & Hồ sơ)
+*Controller gợi ý: `AuthController.java`, `CustomerProfileController.java`*
 
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/auth/register` | Public | **Body:** `{ "email": "", "password": "", "full_name": "", "phone": "" }`<br>*(Sử dụng `@Valid` để check NotBlank, Email format)* |
+| **POST** | `/auth/login` | Public | **Body:** `{ "email": "", "password": "" }`<br>**Response:** `{ "accessToken": "...", "tokenType": "Bearer" }` |
+| **GET** | `/customers/me` | `ROLE_CUSTOMER`| Lấy thông tin cá nhân hiện tại (từ Token).<br>**Response:** Tên, SĐT, Avatar, `loyalty_points`, `total_bookings`. |
+| **PUT** | `/customers/me` | `ROLE_CUSTOMER`| **Body:** `{ "full_name": "...", "phone": "..." }` |
+| **POST** | `/customers/me/avatar` | `ROLE_CUSTOMER`| **Params:** `@RequestPart("file") MultipartFile file`<br>*(Upload ảnh lên Cloudinary, trả về URL mới)* |
 
-### 2.2. 
+--- 
+### 2.2. Nhóm Discovery (Khám phá & Tìm kiếm Nhà hàng)
+*Controller gợi ý: `PublicRestaurantController.java`. Nhóm này hoàn toàn **Public**, dùng để khách lướt xem app khi chưa đăng nhập.*
 
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/cuisines` | Public | Lấy danh sách danh mục ẩm thực (Dùng làm bộ lọc). |
+| **GET** | `/restaurants` | Public | **Tìm kiếm phân trang:**<br>`@RequestParam(required=false) String keyword`<br>`@RequestParam(required=false) Long cuisineId`<br>`@RequestParam(defaultValue="rating_desc") String sortBy`<br>`Pageable pageable` (Thay cho page/size) |
+| **GET** | `/restaurants/{id}` | Public | **Chi tiết quán:**<br>`@PathVariable Long id`<br>*(Trả về kèm `OperatingHours`, `RestaurantImages` và `RestaurantConfig`)* |
+| **GET** | `/restaurants/{id}/menu`| Public | Lấy thực đơn (Đã gom nhóm theo `MenuCategory`).<br>`@PathVariable Long id` |
+| **GET** | `/restaurants/{id}/reviews`| Public | Lấy đánh giá của quán.<br>`@PathVariable Long id`, `Pageable pageable` |
 
-### 2.3. 
+--- 
+### 2.3. Nhóm Reservation (Đặt bàn & Lịch sử)
+*Controller gợi ý: `ReservationController.java`. Trái tim của phân hệ Khách hàng.*
 
-
-### 2.4. 
-
-
-### 2.5. 
-
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/restaurants/{id}/availability` | Public / Private | **Kiểm tra bàn trống:** (Nên tách ra API GET riêng để frontend gọi realtime khi khách đổi giờ).<br>`@PathVariable Long id`<br>`@RequestParam @DateTimeFormat(iso=DATE) LocalDate date`<br>`@RequestParam @DateTimeFormat(iso=TIME) LocalTime time`<br>`@RequestParam int guestCount` |
+| **POST** | `/reservations` | `ROLE_CUSTOMER`| **Tạo đơn đặt bàn mới:**<br>**Body (ReservationRequestDTO):**<br>`{ "restaurant_id": 1, "reservation_date": "2026-10-20", "reservation_time": "19:00:00", "guest_count": 4, "notes": "Gần cửa sổ" }`<br>**Response:** Mã đơn, Status, và `deposit_amount` (Nếu > 0 thì frontend chuyển hướng sang trang thanh toán). |
+| **GET** | `/reservations` | `ROLE_CUSTOMER`| **Lịch sử đặt bàn của tôi:**<br>`@RequestParam(required=false) String status` (UPCOMING / HISTORY)<br>`Pageable pageable` |
+| **GET** | `/reservations/{id}` | `ROLE_CUSTOMER`| **Chi tiết 1 đơn:**<br>`@PathVariable Long id` *(Backend bắt buộc check `id` này có thuộc về `customer_id` trong Token không).* |
+| **PATCH**| `/reservations/{id}/cancel` | `ROLE_CUSTOMER`| **Khách tự hủy bàn:**<br>`@PathVariable Long id`<br>**Body:** `{ "cancel_reason": "Bận đột xuất" }` |
 
 ---
+
+### 2.4. Nhóm Payment (Thanh toán cọc qua Ví điện tử)
+*Controller gợi ý: `PaymentController.java`*
+
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/reservations/{id}/payment-url`| `ROLE_CUSTOMER`| **Tạo Link thanh toán Momo/VNPay:**<br>`@PathVariable Long id`<br>**Body:** `{ "payment_method": "MOMO", "voucher_code": "GIAM50K" }`<br>**Response:** `{ "paymentUrl": "https://momo.vn/..." }` |
+| **GET** | `/reservations/{id}/payment-status`| `ROLE_CUSTOMER`| **Polling check trạng thái:** Frontend gọi liên tục 3s/lần sau khi redirect về app để xem thanh toán đã SUCCESS chưa. |
+| **POST** | `/payments/webhook/{provider}`| **Public** | **Webhook (Server-to-Server):** VNPay/Momo gọi vào đây.<br>`@PathVariable String provider` (momo / vnpay)<br>`@RequestBody String payload` (Lấy thô để check HmacSHA256 Signature). |
+
+---
+### 2.5. Nhóm Review (Đánh giá)
+*Controller gợi ý: `ReviewController.java`. Chỉ được đánh giá khi đơn đã COMPLETED.*
+
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/reservations/{id}/reviews` | `ROLE_CUSTOMER`| **Đăng đánh giá:**<br>`@PathVariable Long id`<br>**Body (Multipart/form-data):**<br>`rating` (int 1-5)<br>`comment` (String)<br>`images` (List<MultipartFile> - tùy chọn). | 
+
+### 2.6. Nhóm In-App Notifications (Thông báo)
+*Controller gợi ý: `NotificationController.java`*
+
+| Method | Endpoint | Security | Spring Boot Params & Body (DTO) |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/notifications` | `ROLE_CUSTOMER`| **Danh sách quả chuông:**<br>`@RequestParam(defaultValue="false") boolean unreadOnly` (Chỉ lấy chưa đọc)<br>`Pageable pageable` |
+| **PATCH**| `/notifications/{id}/read` | `ROLE_CUSTOMER`| **Đánh dấu 1 thông báo đã đọc:**<br>`@PathVariable Long id` |
+| **PATCH**| `/notifications/read-all` | `ROLE_CUSTOMER`| **Đánh dấu đọc tất cả:** Update toàn bộ `is_read = true` cho user hiện tại. |
+
+---
+
 
 ## 3. Phân Hệ Nhà Hàng (Business User)
 *Lưu ý: Bắt buộc Token có quyền `ROLE_RESTAURANT`. Backend tự động lấy `restaurant_id` từ Profile của nhân viên.*
