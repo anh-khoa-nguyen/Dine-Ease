@@ -83,6 +83,131 @@
 
 ---
 
+## 🏪 PHÂN HỆ 2: NHÀ HÀNG
+*Phân hệ lưu trữ thông tin điểm bán, cấu hình, sơ đồ bàn và quản lý danh sách món ăn.*
+
+### 6. Bảng `Restaurant` (Thông tin Nhà hàng)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `status` | enum | | Trạng thái (PENDING, ACTIVE...) |
+| `owner_id` | int | **FK** | Trỏ về `User.id` (Chủ sở hữu) |
+| `name` | varchar | | Tên nhà hàng |
+| `description` | varchar | | Giới thiệu ngắn |
+| `address` | varchar | | Địa chỉ chi tiết |
+| `phone_contact` | varchar | | SĐT liên hệ của quán |
+| `commission_rate` | float | | Mức chiết khấu hoa hồng của Admin (%) |
+| `avg_rating` | double | | Điểm đánh giá trung bình |
+| `image_main` | varchar | | Ảnh đại diện/Thumbnail chính |
+
+### 7. Bảng `RestaurantConfig` (Cấu hình Nhà hàng)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | Trỏ đến `Restaurant.id` (1-1) |
+| `require_deposit` | boolean | | Bắt buộc cọc hay không? |
+| `deposit_type` | enum | | Loại cọc (Cố định hay Phần trăm) |
+| `deposit_value` | double | | Giá trị tiền cọc |
+| `max_pax_per_booking`| int | | Giới hạn số khách tối đa trên 1 đơn |
+
+### 8. Bảng `RestaurantImage` (Thư viện Ảnh)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | Trỏ đến `Restaurant.id` |
+| `image_url` | varchar | | URL hình ảnh không gian/món ăn |
+
+### 9. Bảng `OperatingHour` (Giờ Mở Cửa)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | |
+| `day_of_week` | int | | Từ 1 (Thứ 2) đến 7 (Chủ nhật) |
+| `open_time` | date | | Giờ bắt đầu ca |
+| `close_time` | date | | Giờ kết thúc ca |
+
+### 10. Bảng `Cuisine` (Danh mục Ẩm thực)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `name` | varchar | | Tên thẻ (Ví dụ: Món Nhật, Đồ Âu) |
+| `icon_url` | varchar | | Icon minh họa |
+
+### 11. Bảng `RestaurantCuisine` (Bảng N-N Nhà hàng - Ẩm thực)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `restaurant_id` | int | **FK** | |
+| `cuisine_id` | int | **FK** | |
+
+### 12. Bảng `MenuCategory` (Danh mục Thực đơn của quán)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | |
+| `name` | varchar | | Tên danh mục (Khai vị, Tráng miệng) |
+| `sort_order` | int | | Thứ tự hiển thị |
+
+### 13. Bảng `MenuItem` (Chi tiết Món ăn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `category_id` | int | **FK** | Trỏ đến `MenuCategory.id` |
+| `restaurant_id` | int | **FK** | |
+| `name` | varchar | | Tên món |
+| `description` | varchar | | Thành phần/Mô tả |
+| `price` | double | | Giá bán |
+| `image_url` | varchar | | Ảnh món ăn |
+| `is_bestseller` | boolean | | Có phải món bán chạy không? |
+| `status` | enum | | Trạng thái (AVAILABLE, SOLD_OUT...) |
+
+### 14. Bảng `OptionGroup` (Nhóm Tùy chọn Món)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | |
+| `name` | varchar | | Tên nhóm (Ví dụ: Chọn Size, Topping) |
+| `is_mandatory`| int | | Có bắt buộc chọn không? (1=Có, 0=Không) |
+| `max_choices` | int | | Số lượng tối đa được chọn |
+
+### 15. Bảng `OptionItem` (Chi tiết Tùy chọn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `group_id` | int | **FK** | Trỏ về `OptionGroup.id` |
+| `name` | varchar | | Tên option (Size L, Thêm phô mai) |
+| `additional_price`| double | | Giá cộng thêm |
+
+### 16. Bảng `MenuItem_OptionGroup` (Bảng N-N Món ăn - Tùy chọn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `menu_item_id` | int | **FK** | |
+| `option_group_id`| int | **FK** | Dùng chung Tùy chọn cho nhiều món |
+
+### 17. Bảng `Table` (Sơ đồ Bàn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | |
+| `table_name` | varchar | | Ký hiệu bàn (Ví dụ: VIP-01) |
+| `capacity` | int | | Sức chứa (Số ghế) |
+| `status` | enum | | Trạng thái hiện tại của bàn |
+
+### 18. Bảng `TableGroup` (Nhóm Bàn - Dùng khi khách đi đông)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id` | int | **PK** | |
+| `restaurant_id` | int | **FK** | |
+| `group_name` | varchar | | Tên nhóm gộp (VD: Gộp Bàn 1+2) |
+| `status` | enum | | Trạng thái nhóm (ACTIVE/INACTIVE) |
+
+### 19. Bảng `TableGroupMember` (Bảng N-N Bàn - Nhóm Bàn)
+| Tên cột | Kiểu dữ liệu | Khóa | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `group_id` | int | **FK** | |
+| `table_id` | int | **FK** | |
+
+---
+
 ## PHÂN HỆ 3: NGƯỜI DÙNG
 *Phân hệ xử lý luồng giao dịch cốt lõi: Đặt chỗ, giữ bàn, thanh toán tiền cọc, voucher và đánh giá.*
 
