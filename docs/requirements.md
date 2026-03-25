@@ -44,8 +44,10 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Tìm kiếm nhà hàng](./screenshots/wireframe-customer-search.png)
-*(Mô tả ngắn gọn wireframe: Màn hình hiển thị thanh tìm kiếm, bộ lọc cuisine, danh sách kết quả dạng card...)*
+
+![Wireframe Trang chủ](./screenshots/wireframes/customer/customer-01-home.png)
+
+![Wireframe Tìm kiếm nhà hàng](./screenshots/wireframes/customer/customer-02-search-results.png)
 
 **2. UC_CUSTOMER_02: Xem menu và giá**
 | Trường thông tin | Nội dung |
@@ -64,7 +66,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Xem menu](./screenshots/wireframe-customer-menu.png)
+![Wireframe Xem menu](./screenshots/wireframes/customer/customer-03-restaurant-detail.png)
 
 **3. UC_CUSTOMER_03: Đánh giá nhà hàng**
 | Trường thông tin | Nội dung |
@@ -83,7 +85,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Đánh giá](./screenshots/wireframe-customer-review.png)
+![Wireframe Đánh giá](./screenshots/wireframes/customer/customer-09-review-form.png)
 
 **4. UC_CUSTOMER_04: Xem lịch sử đặt bàn**
 | Trường thông tin | Nội dung |
@@ -102,7 +104,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Lịch sử](./screenshots/wireframe-customer-history.png)
+![Wireframe Lịch sử](./screenshots/wireframes/customer/customer-08-booking-history.png)
 
 **5. UC_CUSTOMER_05: Đặt bàn online**
 | Trường thông tin | Nội dung |
@@ -121,7 +123,14 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Đặt bàn](./screenshots/wireframe-customer-booking.png)
+![Wireframe Đặt bàn (ngày)](./screenshots/wireframes/customer/customer-04-booking-step1-date.png)
+
+![Wireframe Đặt bàn (thời gian)](./screenshots/wireframes/customer/customer-04-booking-step1-time.png)
+
+![Wireframe Đặt bàn (số người)](./screenshots/wireframes/customer/customer-04-booking-step1-people.png)
+
+![Wireframe Đặt bàn - Bước điền thông tin](./screenshots/wireframes/customer/customer-05-booking-step2-contact.png)
+
 
 **6. UC_CUSTOMER_06: Thanh toán đặt cọc**
 | Trường thông tin | Nội dung |
@@ -140,7 +149,14 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Thanh toán](./screenshots/wireframe-customer-payment.png)
+![Wireframe Thanh toán](./screenshots/wireframes/customer/customer-06-booking-step3-payment.png)
+
+![Wireframe Trạng thái thanh toán](./screenshots/wireframes/customer/customer-07-booking-result.png)
+
+*Bổ sung các Wireframe khác:*
+
+![Wireframe Trang cá nhân](./screenshots/wireframes/customer/customer-10-profile.png
+)
 
 ---
 
