@@ -44,8 +44,10 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Tìm kiếm nhà hàng](./screenshots/wireframe-customer-search.png)
-*(Mô tả ngắn gọn wireframe: Màn hình hiển thị thanh tìm kiếm, bộ lọc cuisine, danh sách kết quả dạng card...)*
+
+![Wireframe Trang chủ](./screenshots/wireframes/customer/customer-01-home.png)
+
+![Wireframe Tìm kiếm nhà hàng](./screenshots/wireframes/customer/customer-02-search-results.png)
 
 **2. UC_CUSTOMER_02: Xem menu và giá**
 | Trường thông tin | Nội dung |
@@ -64,7 +66,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Xem menu](./screenshots/wireframe-customer-menu.png)
+![Wireframe Xem menu](./screenshots/wireframes/customer/customer-03-restaurant-detail.png)
 
 **3. UC_CUSTOMER_03: Đánh giá nhà hàng**
 | Trường thông tin | Nội dung |
@@ -83,7 +85,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Đánh giá](./screenshots/wireframe-customer-review.png)
+![Wireframe Đánh giá](./screenshots/wireframes/customer/customer-09-review-form.png)
 
 **4. UC_CUSTOMER_04: Xem lịch sử đặt bàn**
 | Trường thông tin | Nội dung |
@@ -102,7 +104,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Lịch sử](./screenshots/wireframe-customer-history.png)
+![Wireframe Lịch sử](./screenshots/wireframes/customer/customer-08-booking-history.png)
 
 **5. UC_CUSTOMER_05: Đặt bàn online**
 | Trường thông tin | Nội dung |
@@ -121,7 +123,14 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Đặt bàn](./screenshots/wireframe-customer-booking.png)
+![Wireframe Đặt bàn (ngày)](./screenshots/wireframes/customer/customer-04-booking-step1-date.png)
+
+![Wireframe Đặt bàn (thời gian)](./screenshots/wireframes/customer/customer-04-booking-step1-time.png)
+
+![Wireframe Đặt bàn (số người)](./screenshots/wireframes/customer/customer-04-booking-step1-people.png)
+
+![Wireframe Đặt bàn - Bước điền thông tin](./screenshots/wireframes/customer/customer-05-booking-step2-contact.png)
+
 
 **6. UC_CUSTOMER_06: Thanh toán đặt cọc**
 | Trường thông tin | Nội dung |
@@ -140,7 +149,14 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Thanh toán](./screenshots/wireframe-customer-payment.png)
+![Wireframe Thanh toán](./screenshots/wireframes/customer/customer-06-booking-step3-payment.png)
+
+![Wireframe Trạng thái thanh toán](./screenshots/wireframes/customer/customer-07-booking-result.png)
+
+*Bổ sung các Wireframe khác:*
+
+![Wireframe Trang cá nhân](./screenshots/wireframes/customer/customer-10-profile.png
+)
 
 ---
 
@@ -164,7 +180,8 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ) | **10a. Lỗi kết nối Cơ sở dữ liệu (Database Error):**<br>1. Tại bước 10 (hoặc bước 4 của luồng 6a/6b), nếu CSDL gặp sự cố (timeout, deadlock).<br>2. Backend bắt lỗi (catch exception), hủy bỏ giao dịch (rollback) để đảm bảo tính toàn vẹn dữ liệu.<br>3. Backend trả về mã lỗi 500 Internal Server Error.<br>4. Hệ thống hiển thị thông báo: *"Lỗi hệ thống: Không thể cập nhật trạng thái lúc này. Vui lòng thử lại sau."*<br>5. Use case kết thúc trong trạng thái thất bại.<br><br>**11a. Lỗi Hệ thống gửi Email (Email Service Down):**<br>1. Tại bước 11, tác vụ nền không thể kết nối với máy chủ SMTP (JavaMail lỗi).<br>2. Backend ghi log lỗi hệ thống (Error Logging) và đưa tác vụ gửi email vào hàng đợi để thử lại sau (Retry Queue).<br>3. Trạng thái nhà hàng **vẫn được lưu thành công** trong CSDL.<br>4. Hệ thống hiển thị thông báo cảnh báo (Warning) cho Admin: *"Đã duyệt nhà hàng thành công, nhưng hệ thống gửi email đang gián đoạn. Email sẽ được gửi lại sau."*<br>5. Luồng hoạt động tiếp tục tại Bước 12. |
 
 *Wireframe tương ứng:*
-![Wireframe Duyệt nhà hàng](./screenshots/wireframe-admin-approve.png)
+![Wireframe Duyệt nhà hàng](./screenshots/wireframes/admin/admin-02-approval-list.png)
+![Wireframe Duyệt nhà hàng](./screenshots/wireframes/admin/admin-03-approval-detail.png)
 
 **2. UC_ADMIN_02: Quản lý nhà hàng (CRUD)**
 | Trường thông tin | Nội dung |
@@ -181,7 +198,8 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ) | **7a. Dữ liệu không hợp lệ từ phía Backend (Validation Error):**<br>1. Tại bước 8 (hoặc bước 4 của luồng 2b), nếu Admin nhập dữ liệu vi phạm ràng buộc CSDL (Ví dụ: Trùng số điện thoại đã tồn tại, hoặc mức hoa hồng nhập chữ thay vì số) mà Frontend lọt lưới.<br>2. Backend từ chối lưu và trả về mã lỗi `400 Bad Request`.<br>3. Hệ thống hiển thị thông báo lỗi màu đỏ ngay dưới trường dữ liệu bị sai (VD: *"Số điện thoại này đã được đăng ký cho nhà hàng khác"*).<br>4. Admin sửa lại dữ liệu và nhấn "Lưu" lần nữa.<br><br>**9a. Xung đột dữ liệu đồng thời (Concurrent Update Conflict):**<br>1. Tại bước 9, nếu có một Admin khác cũng đang chỉnh sửa và vừa lưu thành công thông tin của **cùng một nhà hàng** đó trước tích tắc.<br>2. Backend phát hiện phiên bản dữ liệu không khớp (Optimistic Locking).<br>3. Backend trả về mã lỗi `409 Conflict`.<br>4. Hệ thống hiển thị thông báo: *"Dữ liệu nhà hàng này vừa được cập nhật bởi một Quản trị viên khác. Vui lòng tải lại trang để xem thông tin mới nhất trước khi chỉnh sửa."*<br>5. Use case kết thúc thất bại, Admin phải F5 lại trang.<br><br>**9b. Mất kết nối Cơ sở dữ liệu:**<br>1. Tại bước 9, hệ thống không thể kết nối tới PostgreSQL/MySQL.<br>2. Backend trả về lỗi `500 Internal Server Error`.<br>3. Hệ thống hiển thị thông báo popup: *"Lỗi máy chủ: Không thể lưu dữ liệu lúc này. Vui lòng thử lại sau."* |
 
 *Wireframe tương ứng:*
-![Wireframe Quản lý nhà hàng](./screenshots/wireframe-admin-restaurant-crud.png)
+![Wireframe Quản lý nhà hàng](./screenshots/wireframes/admin/admin-04-restaurant-list.png)
+![Wireframe Quản lý nhà hàng](./screenshots/wireframes/admin/admin-05-restaurant-form.png)
 
 **3. UC_ADMIN_03: Quản lý danh mục cuisine**
 | Trường thông tin | Nội dung |
@@ -198,7 +216,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ) | **3b. Lỗi Ràng buộc Khóa ngoại (Foreign Key Constraint) khi Xóa:**<br>1. Tại bước 3 của luồng 3a, Admin cố tình nhấn "Xóa" một danh mục **đang có nhà hàng sử dụng** (VD: Xóa "Món Việt" đang có 50 nhà hàng gắn tag).<br>2. Backend thực hiện lệnh DELETE nhưng bị CSDL từ chối do vi phạm khóa ngoại (Cuisine_ID đang tồn tại trong bảng Restaurant).<br>3. Backend bắt lỗi (catch exception) và trả về mã `409 Conflict` hoặc `400 Bad Request`.<br>4. Hệ thống hiển thị thông báo lỗi màu đỏ: *"Không thể xóa! Danh mục này đang được sử dụng bởi 50 nhà hàng. Vui lòng chuyển đổi danh mục cho các nhà hàng đó trước khi xóa."*<br>5. Use case kết thúc thất bại.<br><br>**8a. Lỗi Trùng lặp tên danh mục (Unique Constraint):**<br>1. Tại bước 8 (hoặc bước 4 của luồng 2a), Admin nhập tên danh mục đã tồn tại trong hệ thống (VD: Tạo mới danh mục "Hải sản" trong khi đã có "Hải sản").<br>2. Backend kiểm tra CSDL và phát hiện vi phạm ràng buộc Unique.<br>3. Backend trả về lỗi.<br>4. Hệ thống hiển thị cảnh báo: *"Tên danh mục này đã tồn tại. Vui lòng chọn tên khác."*<br>5. Admin phải sửa lại tên và thử lưu lại.<br><br>**9a. Lỗi dịch vụ lưu trữ ảnh (Cloudinary/S3 Down):**<br>1. Tại bước 9, Admin có tải lên Icon mới nhưng dịch vụ lưu trữ ảnh bên thứ 3 bị lỗi timeout.<br>2. Backend hủy bỏ giao dịch lưu CSDL (Rollback) để tránh việc có data nhưng mất ảnh.<br>3. Hệ thống thông báo: *"Lỗi tải ảnh lên máy chủ. Vui lòng kiểm tra lại file ảnh hoặc thử lại sau."* |
 
 *Wireframe tương ứng:*
-![Wireframe Quản lý danh mục](./screenshots/wireframe-admin-category.png)
+![Wireframe Quản lý danh mục](./screenshots/wireframes/admin/admin-06-cuisine-management.png)
 
 **4. UC_ADMIN_04: Cấu hình commission**
 | Trường thông tin | Nội dung |
@@ -215,7 +233,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ - *Ràng buộc DB, Phân quyền & Lỗi hệ thống*) | **8a. Lỗi Phân quyền (Unauthorized Access):**<br>1. Tại bước 8, nếu một Admin thông thường (không phải Super Admin) cố tình gửi yêu cầu API cập nhật hoa hồng (có thể qua Postman hoặc lỗi hiển thị UI).<br>2. Backend kiểm tra Token (JWT) và phát hiện user không có quyền `ROLE_SUPER_ADMIN`.<br>3. Backend từ chối yêu cầu và trả về mã lỗi `403 Forbidden`.<br>4. Hệ thống hiển thị thông báo lỗi màu đỏ: *"Bạn không có quyền thực hiện thao tác này. Vui lòng liên hệ Quản trị viên cấp cao."*<br>5. Use case kết thúc thất bại.<br><br>**9a. Lỗi Giao dịch CSDL (Transaction Rollback):**<br>1. Tại bước 9, quá trình lưu cấu hình mới (bước 9a) thành công nhưng quá trình ghi log lịch sử (bước 9b) bị lỗi (do mất kết nối DB hoặc lỗi ràng buộc bảng log).<br>2. Nhờ cơ chế `transaction.atomic` (hoặc tương đương), Backend tự động hủy bỏ (Rollback) toàn bộ giao dịch. Mức hoa hồng sẽ quay về giá trị cũ (15%).<br>3. Backend trả về mã lỗi `500 Internal Server Error`.<br>4. Hệ thống hiển thị thông báo: *"Lỗi hệ thống: Không thể lưu cấu hình lúc này để đảm bảo tính toàn vẹn dữ liệu. Vui lòng thử lại sau."*<br>5. Use case kết thúc thất bại.<br><br>**7a. Lỗi Dữ liệu không hợp lệ (Validation Error):**<br>1. Tại bước 7, Super Admin nhập giá trị hoa hồng là "-5" hoặc "120".<br>2. Frontend phát hiện lỗi validation ngay lập tức (hoặc Backend trả về lỗi `400 Bad Request` nếu lọt qua Frontend).<br>3. Hệ thống chặn thao tác lưu và hiển thị cảnh báo dưới ô nhập liệu: *"Mức hoa hồng phải là số dương và không vượt quá 100%."*<br>4. Super Admin phải nhập lại giá trị hợp lệ. |
 
 *Wireframe tương ứng:*
-![Wireframe Cấu hình hoa hồng](./screenshots/wireframe-admin-commission.png)
+![Wireframe Cấu hình hoa hồng](./screenshots/wireframes/admin/admin-07-system-config.png)
 
 **5. UC_ADMIN_05: Báo cáo toàn hệ thống**
 | Trường thông tin | Nội dung |
@@ -232,7 +250,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ - *Lỗi hiệu năng và Hệ thống*) | **6a. Lỗi khoảng thời gian quá lớn (Validation/Performance Constraint):**<br>1. Tại bước 6, Admin cố tình chọn khoảng thời gian quá dài (Ví dụ: Lọc dữ liệu của 5 năm qua).<br>2. Backend kiểm tra logic (Validation) và nhận thấy khoảng thời gian vượt quá giới hạn cho phép truy vấn trực tiếp (VD: Giới hạn tối đa là 1 năm/lần lọc để tránh treo DB).<br>3. Backend từ chối truy vấn và trả về mã lỗi `400 Bad Request`.<br>4. Hệ thống hiển thị cảnh báo: *"Khoảng thời gian lọc quá lớn. Vui lòng chọn khoảng thời gian tối đa là 12 tháng để đảm bảo tốc độ tải dữ liệu."*<br>5. Admin phải chọn lại ngày.<br><br>**7b. Lỗi Quá thời gian truy vấn (Database Timeout):**<br>1. Tại bước 7, do lượng dữ liệu trong CSDL quá khổng lồ (hàng triệu đơn đặt bàn), câu lệnh `GROUP BY` chạy quá lâu vượt mức cho phép (VD: > 30 giây).<br>2. CSDL tự động ngắt kết nối (Timeout) để giải phóng tài nguyên.<br>3. Backend trả về mã lỗi `504 Gateway Timeout`.<br>4. Hệ thống hiển thị thông báo: *"Hệ thống đang quá tải do lượng dữ liệu lớn. Vui lòng thử lại sau hoặc thu hẹp khoảng thời gian lọc."*<br><br>**3a (Luồng Export). Lỗi tạo file báo cáo (Out of Memory / File Generation Error):**<br>1. Tại bước 3 của luồng 4a, khi Backend đang tạo file Excel với hàng trăm ngàn dòng, máy chủ bị hết RAM (Out of Memory) hoặc thư viện lỗi.<br>2. Backend bắt lỗi (catch exception) và trả về mã `500 Internal Server Error`.<br>3. Hệ thống hiển thị thông báo: *"Đã xảy ra lỗi trong quá trình tạo file Excel. Vui lòng thử lại hoặc liên hệ bộ phận kỹ thuật."* |
 
 *Wireframe tương ứng:*
-![Wireframe Báo cáo Admin](./screenshots/wireframe-admin-report.png)
+![Wireframe Báo cáo Admin](./screenshots/wireframes/admin/admin-01-dashboard.png)
 
 **6. UC_ADMIN_06: Quản lý thông báo**
 | Trường thông tin | Nội dung |
@@ -249,7 +267,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 | **Exception flows**<br>(Luồng ngoại lệ - *Lỗi Hàng đợi và Dịch vụ bên thứ 3*) | **11a. Lỗi kết nối Hàng đợi Tác vụ (Redis/Message Broker Down):**<br>1. Tại bước 11, Backend cố gắng đẩy tác vụ gửi thông báo vào Redis nhưng Redis bị sập (Connection Refused).<br>2. Backend bắt lỗi, cập nhật trạng thái bản ghi thông báo trong CSDL thành `FAILED` (Thất bại).<br>3. Backend trả về mã lỗi `500 Internal Server Error`.<br>4. Hệ thống hiển thị thông báo lỗi màu đỏ: *"Lỗi hệ thống: Không thể khởi tạo tiến trình gửi thông báo. Vui lòng liên hệ kỹ thuật."*<br>5. Use case kết thúc thất bại.<br><br>**14a. Lỗi Dịch vụ Firebase/Email (FCM/SMTP Error) trong lúc chạy ngầm:**<br>1. Tại bước 14 (tiến trình chạy ngầm), Worker đang gửi thông báo thì dịch vụ Firebase (FCM) báo lỗi (VD: Quá giới hạn API rate limit, hoặc Token thiết bị hết hạn).<br>2. Worker ghi log lỗi cụ thể cho từng User bị thất bại.<br>3. Nếu lỗi toàn hệ thống (FCM sập), Worker sẽ đưa task trở lại Hàng đợi để thử lại sau (Retry mechanism).<br>4. Nếu thử lại quá số lần quy định (Max retries), Worker cập nhật trạng thái chiến dịch trong CSDL thành `PARTIALLY_SENT` (Gửi một phần) hoặc `FAILED`.<br>*(Lưu ý: Vì đây là tiến trình ngầm, Admin sẽ không thấy lỗi ngay lập tức trên màn hình, mà chỉ thấy trạng thái `FAILED` khi xem lại Lịch sử thông báo ở luồng 1a).* |
 
 *Wireframe tương ứng:*
-![Wireframe Quản lý thông báo](./screenshots/wireframe-admin-notification.png)
+![Wireframe Quản lý thông báo](./screenshots/wireframes/admin/admin-08-notification.png)
 
 ---
 
@@ -274,7 +292,9 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Hồ sơ nhà hàng](./screenshots/wireframe-rest-profile.png)
+![Wireframe Hồ sơ nhà hàng](./screenshots/wireframes/restaurant/restaurant-01-setting-restaurant-profile.png)
+
+![Wireframe Hồ sơ nhà hàng](./screenshots/wireframes/restaurant/restaurant-02-setting-restaurant-profile.png)
 
 **2. UC_RESTAURANT_02: Quản lý thực đơn**
 | Trường thông tin | Nội dung |
@@ -292,7 +312,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Quản lý thực đơn](./screenshots/wireframe-rest-menu.png)
+![Wireframe Quản lý thực đơn](./screenshots/wireframes/restaurant/restaurant-03-menu-management.png)
 
 **3. UC_RESTAURANT_03: Quản lý bàn (Sơ đồ bàn)**
 | Trường thông tin | Nội dung |
@@ -311,7 +331,8 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Sơ đồ bàn](./screenshots/wireframe-rest-tables.png)
+![Wireframe Sơ đồ bàn](./screenshots/wireframes/restaurant/restaurant-04-table-management.png)
+![Wireframe Sơ đồ bàn](./screenshots/wireframes/restaurant/restaurant-05-reservation-management.png.jpg)
 
 **4. UC_RESTAURANT_04: Quản lý thanh toán**
 | Trường thông tin | Nội dung |
@@ -330,7 +351,7 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 ---
 
 *Wireframe tương ứng:*
-![Wireframe Thanh toán POS](./screenshots/wireframe-rest-payment.png)
+![Wireframe Thanh toán POS](./screenshots/wireframes/restaurant/restaurant-06-checkout-billing.png.jpg)
 
 **5. UC_RESTAURANT_05: Báo cáo doanh thu**
 | Trường thông tin | Nội dung |
@@ -348,4 +369,4 @@ Hệ thống bao gồm 3 phân hệ người dùng chính:
 
 ---
 *Wireframe tương ứng:*
-![Wireframe Báo cáo doanh thu](./screenshots/wireframe-rest-report.png)
+![Wireframe Báo cáo doanh thu](./screenshots/wireframes/restaurant/restaurant-07-dashboard.png.jpg)
