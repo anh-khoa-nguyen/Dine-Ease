@@ -1,0 +1,31 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    # Tự động tạo database 'dineease' nếu chưa có
+    url: jdbc:mysql://localhost:3306/dineease?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root        # Mặc định của XAMPP/MySQL là root
+    password: Abc@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      # 'update' giúp tự động tạo bảng từ các file Entity (User, Cuisine...) bạn đã viết
+      ddl-auto: update    
+    show-sql: true        # In các câu lệnh SQL ra console để bạn dễ theo dõi
+    properties:
+      hibernate:
+        format_sql: true
+
+# Cấu hình JWT (Bắt buộc phải có để JwtProperties.java không bị lỗi)
+app:
+  jwt:
+    secret: DineEaseSecretKeyMustBeLongEnoughForHS256Algorithm2026
+    accessTokenExpirationMs: 86400000    # 1 ngày
+    refreshTokenExpirationMs: 604800000 # 7 ngày
+
+# Cấu hình để xem Swagger UI
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
