@@ -5,3 +5,4 @@ public enum Role {
     RESTAURANT,  // Chủ nhà hàng / Lễ tân
     CUSTOMER     // Khách hàng đặt bàn
 }
+
