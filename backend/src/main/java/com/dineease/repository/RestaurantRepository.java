@@ -8,4 +8,5 @@ import com.dineease.entity.RestaurantStatus;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findByStatus (RestaurantStatus status, Pageable pageable); //Tìm quán đang hoạt động để hiển thị cho khách hàng
+    Optional<Restaurant> findByOwnerEmail(String email);
 }
