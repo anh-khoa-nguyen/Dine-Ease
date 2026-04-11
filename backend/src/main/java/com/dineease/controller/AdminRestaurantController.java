@@ -39,13 +39,14 @@ public class AdminRestaurantController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Cập nhật trạng thái (Duyệt/Từ chối nhà hàng)")
+    @Operation(summary = "Cập nhật trạng thái (Duyệt/Từ chối nhà hàng)", 
+               description = "Nghiệp vụ: Nếu duyệt (status = APPROVED), hệ thống sẽ tự động nâng cấp quyền Chủ quán (Role.RESTAURANT), sinh mật khẩu mới và gửi Email thông báo.")
     @PatchMapping("/{id}/status")
     public ResponseEntity<RestaurantAdminResponse> updateRestaurantStatus(
             @PathVariable Long id,
             @Valid @RequestBody RestaurantStatusUpdateRequest request) {
         
-        // Gọi Service update trạng thái (Tuần 5: Chỉ update DB)
+        // Gọi Service update trạng thái và thực hiện business logic
         RestaurantAdminResponse updated = adminRestaurantService.updateRestaurantStatus(id, request);
         return ResponseEntity.ok(updated);
     }
