@@ -12,11 +12,13 @@ import com.dineease.dto.RestaurantStatusUpdateRequest;
 import com.dineease.service.AdminRestaurantService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "Admin - Restaurants", description = "Quản trị viên: Quản lý & Duyệt nhà hàng")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/admin/restaurants")
 public class AdminRestaurantController {
 
