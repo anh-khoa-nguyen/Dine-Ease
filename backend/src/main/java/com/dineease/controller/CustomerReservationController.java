@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import com.dineease.dto.CancelReservationRequest;
 import com.dineease.dto.ReservationRequest;
 import com.dineease.dto.ReservationResponse;
 import com.dineease.service.CustomerReservationService;
@@ -30,7 +31,7 @@ public class CustomerReservationController {
         this.reservationService = reservationService;
     }
 
-    @Operation(summary = "Tạo đơn đặt bàn mới")
+    @Operation(summary = "Tạo đơn đặt bàn mới", description = "Hệ thống sẽ tự động tính toán tổng số người đã đặt ở khung giờ đó. Nếu vượt quá sức chứa của nhà hàng, API sẽ trả về lỗi 409 Conflict (DuplicateResourceException).")
     @PostMapping
     public ResponseEntity<ReservationResponse> createBooking(
         @Valid @RequestBody ReservationRequest request,
@@ -51,5 +52,16 @@ public class CustomerReservationController {
         String email = userDetails.getUsername();
         Pageable pageable = PageRequest.of(page, size, Sort.by("reservationDate").descending());
         return ResponseEntity.ok(reservationService.getMyReservations(email,pageable));
+    }
+
+    @Operation(summary = "Hủy đơn đặt bàn", description = "Chỉ cho phép khách tự hủy khi đơn đang ở trạng thái PENDING hoặc CONFIRMED. Bắt buộc nhập lý do hủy.")
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<ReservationResponse> cancelBooking(
+        @PathVariable Long id,
+        @Valid @RequestBody CancelReservationRequest request,
+        @AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        ReservationResponse response = reservationService.cancelReservation(id, request,email);
+        return ResponseEntity.ok(response);
     }
 }
