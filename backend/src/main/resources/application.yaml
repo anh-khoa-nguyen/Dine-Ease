@@ -18,6 +18,18 @@ spring:
       hibernate:
         format_sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nak.khoanguyen@gmail.com
+    password: fayd vqyv oodm uxjz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 # Cấu hình JWT (Bắt buộc phải có để JwtProperties.java không bị lỗi)
 app:
   jwt:
@@ -29,3 +41,8 @@ app:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+logging:
+  level:
+    com.dineease: DEBUG
+    org.springframework.mail: DEBUG

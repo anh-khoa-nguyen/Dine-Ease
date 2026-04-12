@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // 1. Lỗi validation dữ liệu (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         List<ApiError.FieldErrorDetail> details = ex.getBindingResult().getFieldErrors().stream()
@@ -33,36 +34,49 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    // 2. Lỗi không tìm thấy tài nguyên (404)
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
         ApiError body = new ApiError("Not Found", ex.getMessage(), null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    // 3. Lỗi trùng lặp dữ liệu (409) - Dùng cho kẹt bàn, trùng email
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ApiError> handleConflict(DuplicateResourceException ex, HttpServletRequest request) {
         ApiError body = new ApiError("Conflict", ex.getMessage(), null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
+    // 4. Lỗi sai thông tin đăng nhập (401)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
         ApiError body = new ApiError("Unauthorized", "Email hoặc mật khẩu không đúng", null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
+    // 5. Lỗi xác thực nói chung (401)
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthentication(AuthenticationException ex, HttpServletRequest request) {
         ApiError body = new ApiError("Unauthorized", ex.getMessage(), null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
+    // 6. Lỗi không có quyền truy cập (403)
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
         ApiError body = new ApiError("Forbidden", "Bạn không có quyền truy cập tài nguyên này", null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
+    // 7. Lỗi logic nghiệp vụ hoặc tham số không hợp lệ (400)
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
+    public ResponseEntity<ApiError> handleBadRequestLogic(RuntimeException ex, HttpServletRequest request) {
+        ApiError body = new ApiError("Bad Request", ex.getMessage(), null, request.getRequestURI(), Instant.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    // 8. Lỗi hệ thống chưa xác định (500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex, HttpServletRequest request) {
         log.error("Unhandled error: ", ex);
