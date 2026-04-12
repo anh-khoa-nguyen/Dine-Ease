@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -84,5 +85,29 @@ public class GlobalExceptionHandler {
 
     private ApiError.FieldErrorDetail toFieldError(FieldError fe) {
         return new ApiError.FieldErrorDetail(fe.getField(), fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "Invalid");
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest request) {
+        ApiError body = new ApiError("Bad Request", ex.getMessage(), null, request.getRequestURI(), Instant.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> handleIllegalState(IllegalStateException ex, HttpServletRequest request) {
+        ApiError body = new ApiError("Bad Request", ex.getMessage(), null, request.getRequestURI(), Instant.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body); // Trả về 400
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        ApiError body = new ApiError(
+            "Bad Request", 
+            ex.getMessage(), 
+            null, 
+            request.getRequestURI(), 
+            Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }

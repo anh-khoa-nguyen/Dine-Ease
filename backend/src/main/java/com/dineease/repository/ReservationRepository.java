@@ -14,7 +14,13 @@ import com.dineease.entity.CustomerProfile;
 import com.dineease.entity.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Page<Reservation> findByCustomer(CustomerProfile customer, Pageable pageable); //Lấy lịch sử đặt hàng của một khách hàng cụ thể
+    Page<Reservation> findByCustomer(CustomerProfile customer, Pageable pageable); 
+
+    // Lấy danh sách đơn đặt bàn của quán dựa trên email chủ quán
+    Page<Reservation> findByRestaurantOwnerEmail(String email, Pageable pageable);
+
+    // Tìm đơn cụ thể kèm check bảo mật email chủ quán
+    Optional<Reservation> findByIdAndRestaurantOwnerEmail(Long id, String email);
 
     // 1. Tính TỔNG SỐ KHÁCH ĐÃ ĐẶT CHỖ tại 1 nhà hàng, vào đúng ngày/giờ đó.
     // Chỉ tính những đơn đang chiếm chỗ (PENDING, CONFIRMED, CHECKED_IN)
@@ -32,8 +38,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         @Param("reservationTime") LocalTime reservationTime
     );
 
-    // 2.Tìm đơn đặt bàn để HỦY.
-   // Bắt buộc phải tìm theo ID đơn VÀ Email của khách hàng đang đăng nhập (Tránh ng dùng khác hủy đơn của khách đặt)
-   @Query(("SELECT r FROM Reservation r WHERE r.id = :id AND r.customer.user.email = :email"))
-   Optional<Reservation> findByIdAndCustomerEmail(@Param("id") Long id,@Param("email") String email);
+    @Query("SELECT r FROM Reservation r WHERE r.id = :id AND r.customer.user.email = :email")
+    Optional<Reservation> findByIdAndCustomerEmail(@Param("id") Long id, @Param("email") String email);
 }
