@@ -29,7 +29,7 @@ public class Reservation {
     private Integer guestCount;
 
     @Column(columnDefinition = "TEXT")
-    private String notes; // Ghi chú của khách
+    private String notes; 
 
     @Column(name = "cancel_reason")
     private String cancelReason;
@@ -57,4 +57,8 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_table_id")
+    private RestaurantTable assignedTable;
 }
