@@ -11,11 +11,13 @@ import com.dineease.dto.CuisineResponse;
 import com.dineease.service.CuisineService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "Admin - Cuisines", description = "Quản trị viên: Quản lý danh mục ẩm thực (Cuisine)")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/admin/cuisines")
 public class AdminCuisineController {
 

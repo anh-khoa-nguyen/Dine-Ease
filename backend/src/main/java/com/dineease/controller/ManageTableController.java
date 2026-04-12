@@ -4,6 +4,7 @@ import com.dineease.dto.TableResponse;
 import com.dineease.service.ManageTableService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 
 @Tag(name = "Restaurant - Table Management", description = "Chủ nhà hàng: Quản lý sơ đồ bàn")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/manage/tables")
 @RequiredArgsConstructor
 

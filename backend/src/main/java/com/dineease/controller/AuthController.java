@@ -13,6 +13,7 @@ import com.dineease.dto.UserResponse;
 import com.dineease.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -42,6 +43,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Lấy thông tin tài khoản đang đăng nhập", description = "Bắt buộc truyền Bearer Token")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails userDetails) {
         if(userDetails == null) {

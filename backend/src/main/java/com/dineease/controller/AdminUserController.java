@@ -15,10 +15,12 @@ import com.dineease.entity.Role;
 import com.dineease.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Admin - Users Management", description = "Quản trị viên: Xem danh sách người dùng")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/admin/users")
 public class AdminUserController {
     

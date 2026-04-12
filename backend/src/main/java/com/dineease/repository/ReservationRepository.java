@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.dineease.entity.CustomerProfile;
 import com.dineease.entity.Reservation;
+import com.dineease.entity.ReservationStatus;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Page<Reservation> findByCustomer(CustomerProfile customer, Pageable pageable); 
@@ -40,4 +41,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r FROM Reservation r WHERE r.id = :id AND r.customer.user.email = :email")
     Optional<Reservation> findByIdAndCustomerEmail(@Param("id") Long id, @Param("email") String email);
+
+    // ---------
+    // 1. Đếm tổng số đơn theo trạng thái (Dùng Spring Data JPA đếm tự động)
+    long countByStatus(ReservationStatus status);
+
+    // 2. Tính TỔNG TIỀN HOA HỒNG (Dùng COALESCE để tránh lỗi NullPointerException nếu chưa có doanh thu)
+    @Query("SELECT COALESCE(SUM(r.commissionAmount), 0.0) FROM Reservation r WHERE r.status = :status")
+    Double calculateTotalCommissionByStatus(@Param("status") ReservationStatus status);
 }

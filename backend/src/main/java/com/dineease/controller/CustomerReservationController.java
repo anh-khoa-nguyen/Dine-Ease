@@ -16,12 +16,14 @@ import com.dineease.dto.ReservationResponse;
 import com.dineease.service.CustomerReservationService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 //Api đặt bàn (Yêu cầu token)
 @Tag(name = "Customer - Reservation", description = "Khách hàng đặt bàn và xem lịch sử đặt bàn của mình")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/reservations")
 public class CustomerReservationController {
 
