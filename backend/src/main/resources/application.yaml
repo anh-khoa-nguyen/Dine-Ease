@@ -46,3 +46,18 @@ logging:
   level:
     com.dineease: DEBUG
     org.springframework.mail: DEBUG
+
+
+# ==========================================
+# CẤU HÌNH CỔNG THANH TOÁN VNPAY 
+# ==========================================
+
+#ngrok: https://11ee-171-227-193-234.ngrok-free.app
+vnpay:
+ pay-url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+ tmn-code: "1X6AOIJU" 
+ hash-secret: "72KB4KG4V0WBAC6ICMYBJS6838L5ZNGC" 
+ 
+ # URL để VNPay chuyển khách hàng về lại ReactJS sau khi thanh toán xong
+ # return-url: "https://11ee-171-227-193-234.ngrok-free.app/payment-result"
+ return-url: "http://localhost:3000/payment-result"
