@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,6 +40,9 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
+            // Cho phép các request OPTIONS (Preflight) đi qua
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
             // 1. Nhóm API Public (Không cần Token)
             .requestMatchers("/api/v1/auth/**").permitAll()        // Đăng nhập, đăng ký
             .requestMatchers("/api/v1/public/**").permitAll()      // Tìm kiếm, xem quán, xem menu
