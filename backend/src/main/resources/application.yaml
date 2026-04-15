@@ -29,6 +29,14 @@ spring:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  
+  config:
+    import: "optional:file:.env[.properties]"
+
 
 # Cấu hình JWT (Bắt buộc phải có để JwtProperties.java không bị lỗi)
 app:
@@ -44,5 +52,19 @@ springdoc:
 
 logging:
   level:
+    root: INFO
+    org.springframework.web.multipart: TRACE
+    org.apache.tomcat.util.http.fileupload: DEBUG
+    org.apache.catalina: DEBUG
+    org.apache.tomcat: DEBUG
+
     com.dineease: DEBUG
     org.springframework.mail: DEBUG
+
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+

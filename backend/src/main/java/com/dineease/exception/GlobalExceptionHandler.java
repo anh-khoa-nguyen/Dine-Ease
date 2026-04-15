@@ -79,8 +79,11 @@ public class GlobalExceptionHandler {
     // 8. Lỗi hệ thống chưa xác định (500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex, HttpServletRequest request) {
+        System.out.println("====== LỖI RỒI: " + ex.getClass().getName() + " ======");
+        ex.printStackTrace(); 
+        
         log.error("Unhandled error: ", ex);
-        ApiError body = new ApiError("Internal Server Error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.", null, request.getRequestURI(), Instant.now());
+        ApiError body = new ApiError("Internal Server Error", "Đã xảy ra lỗi hệ thống.", null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
