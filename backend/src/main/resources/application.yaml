@@ -1,19 +1,20 @@
 server:
-  port: 8090
+  port: ${PORT:8090}
 
 spring:
   datasource:
     # Tự động tạo database 'dineease' nếu chưa có
-    url: jdbc:mysql://localhost:3306/dineease?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root        # Mặc định của XAMPP/MySQL là root
-    password: Abc@123
+    url: ${DB_URL:jdbc:mysql://localhost:3306/dineease?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}        # Mặc định của XAMPP/MySQL là root
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   jpa:
+    open-in-view: false
     hibernate:
       # 'update' giúp tự động tạo bảng từ các file Entity (User, Cuisine...) bạn đã viết
-      ddl-auto: update    
-    show-sql: true        # In các câu lệnh SQL ra console để bạn dễ theo dõi
+      ddl-auto: update
+    show-sql: true        # In các câu lệnh SQL ra console để dễ theo dõi
     properties:
       hibernate:
         format_sql: true
@@ -22,7 +23,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: nak.khoanguyen@gmail.com
-    password: fayd vqyv oodm uxjz
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -30,10 +31,19 @@ spring:
           starttls:
             enable: true
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  
+  config:
+    import: "optional:file:.env[.properties]"
+
+
 # Cấu hình JWT (Bắt buộc phải có để JwtProperties.java không bị lỗi)
 app:
   jwt:
-    secret: DineEaseSecretKeyMustBeLongEnoughForHS256Algorithm2026
+    secret: ${JWT_SECRET}
     accessTokenExpirationMs: 86400000    # 1 ngày
     refreshTokenExpirationMs: 604800000 # 7 ngày
 
@@ -44,5 +54,21 @@ springdoc:
 
 logging:
   level:
+    root: INFO
+    org.springframework.web.multipart: TRACE
+    org.apache.tomcat.util.http.fileupload: DEBUG
+    org.apache.catalina: DEBUG
+    org.apache.tomcat: DEBUG
     com.dineease: DEBUG
     org.springframework.mail: DEBUG
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+vnpay:
+  pay-url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  tmn-code: "1X6AOIJU" 
+  hash-secret: ${VNPAY_HASH_SECRET}
+  return-url: "http://localhost:3000/payment-result"

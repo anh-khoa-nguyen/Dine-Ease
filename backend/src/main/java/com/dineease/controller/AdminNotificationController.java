@@ -15,11 +15,13 @@ import com.dineease.dto.NotificationResponse;
 import com.dineease.service.NotificationService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "Admin - Notifications", description = "Quản trị viên: Tạo & Gửi thông báo hệ thống")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/api/v1/admin/notifications")
 public class AdminNotificationController {
 

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -48,6 +49,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
+    // 3.1. Lỗi vi phạm ràng buộc Database (Unique constraint) do race condition
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
+        log.error("Data integrity violation: {}", ex.getMessage());
+        ApiError body = new ApiError("Conflict", "Dữ liệu đã tồn tại hoặc vi phạm ràng buộc cơ sở dữ liệu.", null, request.getRequestURI(), Instant.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
     // 4. Lỗi sai thông tin đăng nhập (401)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
@@ -79,8 +88,11 @@ public class GlobalExceptionHandler {
     // 8. Lỗi hệ thống chưa xác định (500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex, HttpServletRequest request) {
+        System.out.println("====== LỖI RỒI: " + ex.getClass().getName() + " ======");
+        ex.printStackTrace(); 
+        
         log.error("Unhandled error: ", ex);
-        ApiError body = new ApiError("Internal Server Error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.", null, request.getRequestURI(), Instant.now());
+        ApiError body = new ApiError("Internal Server Error", "Đã xảy ra lỗi hệ thống.", null, request.getRequestURI(), Instant.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 

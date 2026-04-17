@@ -11,6 +11,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +47,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                 }
             }
+        } catch (ExpiredJwtException ex) {
+            log.error("JWT expired: {}", ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"TokenExpired\", \"message\":\"Access token đã hết hạn. Vui lòng đăng nhập lại.\"}");
+            return; // Dừng filter chain ngay lập tức
+        } catch (JwtException ex) {
+            log.error("Invalid JWT: {}", ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\":\"InvalidToken\", \"message\":\"Token không hợp lệ hoặc bị can thiệp.\"}");
+            return; // Dừng filter chain ngay lập tức
         } catch (Exception ex) {
             log.debug("Could not set user authentication from JWT: {}", ex.getMessage());
         }
