@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.dineease.dto.PaymentRequest;
 import com.dineease.dto.PaymentUrlResponse;
 import com.dineease.service.PaymentService;
 
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @Tag(name = "Customer - Payment", description = "Tạo thanh toán VNPay và Xử lý Webhook IPN")
 @RestController
@@ -26,14 +28,14 @@ public class PaymentController {
 
     @Operation(summary = "Tạo Link Thanh toán VNPay", description = "Tạo URL để chuyển hướng khách sang cổng VNPay.")
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/create-url/vnpay/{reservationId}")
+    @PostMapping("/vnpay")
     public ResponseEntity<PaymentUrlResponse> createVnpayPaymentUrl(
-        @PathVariable Long reservationId,
+        @Valid @RequestBody PaymentRequest requestBody,
         Authentication auth,
         HttpServletRequest request // Cần để lấy địa chỉ IP của khách hàng
     ) {
         String email = auth.getName();
-        PaymentUrlResponse response = paymentService.createVnpayPaymentUrl(reservationId, email, request);
+        PaymentUrlResponse response = paymentService.createVnpayPaymentUrl(requestBody.reservationId(), email, request);
         return ResponseEntity.ok(response);
     }
     @Operation(summary = "Webhook (IPN) nhận kết quả từ VNPay", description = "API Public. Dành riêng cho Server VNPay gọi về để báo kết quả. Bảo mật bằng HmacSHA512.")
