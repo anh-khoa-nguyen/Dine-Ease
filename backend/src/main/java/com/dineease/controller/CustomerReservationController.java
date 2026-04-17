@@ -10,9 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import com.dineease.dto.CancelReservationRequest;
 import com.dineease.dto.ReservationRequest;
 import com.dineease.dto.ReservationResponse;
+import com.dineease.dto.UpdateReservationStatusRequest;
 import com.dineease.service.CustomerReservationService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,14 +56,14 @@ public class CustomerReservationController {
         return ResponseEntity.ok(reservationService.getMyReservations(email,pageable));
     }
 
-    @Operation(summary = "Hủy đơn đặt bàn", description = "Chỉ cho phép khách tự hủy khi đơn đang ở trạng thái PENDING hoặc CONFIRMED. Bắt buộc nhập lý do hủy.")
-    @PostMapping("/{id}/cancel")
-    public ResponseEntity<ReservationResponse> cancelBooking(
+    @Operation(summary = "Cập nhật trạng thái đơn (Hủy đơn)", description = "Chỉ cho phép khách tự hủy khi đơn đang ở trạng thái PENDING hoặc CONFIRMED. Bắt buộc truyền status = CANCELLED và có cancelReason.")
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ReservationResponse> updateBookingStatus(
         @PathVariable Long id,
-        @Valid @RequestBody CancelReservationRequest request,
+        @Valid @RequestBody UpdateReservationStatusRequest request,
         @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
-        ReservationResponse response = reservationService.cancelReservation(id, request,email);
+        ReservationResponse response = reservationService.updateReservationStatus(id, request,email);
         return ResponseEntity.ok(response);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dineease.dto.CancelReservationRequest;
 import com.dineease.dto.ReservationRequest;
 import com.dineease.dto.ReservationResponse;
+import com.dineease.dto.UpdateReservationStatusRequest;
 import com.dineease.entity.CustomerProfile;
 import com.dineease.entity.Reservation;
 import com.dineease.entity.ReservationStatus;
@@ -98,21 +99,27 @@ public class CustomerReservationService {
 
     //Khách hàng tự hủy bàn
     @Transactional
-    public ReservationResponse cancelReservation(Long id, CancelReservationRequest request, String customerEmail) {
+    public ReservationResponse updateReservationStatus(Long id, UpdateReservationStatusRequest request, String customerEmail) {
         //Tìm đơn đặt bàn theo ID và email của khách (Đảm bảo chỉ được hủy đơn của mình)
         Reservation reservation = reservationRepository.findByIdAndCustomerEmail(id, customerEmail)
             .orElseThrow(() -> new ResourceNotFoundException("Đơn đặt bàn không tồn tại hoặc bạn không có quyền hủy đơn này"));
+        if (request.status() == ReservationStatus.CANCELLED) {
+            if (request.cancelReason() == null || request.cancelReason().isBlank()) {
+                throw new IllegalArgumentException("Vui lòng cung cấp lý do hủy đặt bàn");
+            }
         
-        // Bước B: Kiểm tra logic - Chỉ cho hủy nếu chưa Check-in
-        if (reservation.getStatus() == ReservationStatus.CHECKED_IN || 
-            reservation.getStatus() == ReservationStatus.COMPLETE || 
-            reservation.getStatus() == ReservationStatus.CANCELLED) {
-            throw new IllegalArgumentException("Không thể hủy! Đơn đặt bàn này đã hoàn thành, bị hủy hoặc bạn đã tới quán.");
+            // Bước B: Kiểm tra logic - Chỉ cho hủy nếu chưa Check-in
+            if (reservation.getStatus() == ReservationStatus.CHECKED_IN || 
+                reservation.getStatus() == ReservationStatus.COMPLETE || 
+                reservation.getStatus() == ReservationStatus.CANCELLED) {
+                throw new IllegalArgumentException("Không thể hủy! Đơn đặt bàn này đã hoàn thành, bị hủy hoặc bạn đã tới quán.");
+            }
+            //Cập nhật lý do hủy và đổi status
+            reservation.setCancelReason(request.cancelReason());
+            reservation.setStatus(ReservationStatus.CANCELLED);
+        } else {
+            throw new IllegalArgumentException("Khách hàng chỉ có quyền Hủy (CANCELLED) đơn đặt bàn.");
         }
-        //Cập nhật lý do hủy và đổi status
-        reservation.setCancelReason(request.cancelReason());
-        reservation.setStatus(ReservationStatus.CANCELLED);
-
         return mapToResponse(reservationRepository.save(reservation));
     }
 
