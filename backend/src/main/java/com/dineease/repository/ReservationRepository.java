@@ -16,6 +16,7 @@ import com.dineease.entity.Reservation;
 import com.dineease.entity.ReservationStatus;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+    @EntityGraph(attributePaths = {"restaurant"})
     Page<Reservation> findByCustomer(CustomerProfile customer, Pageable pageable); 
 
     // Lấy danh sách đơn đặt bàn của quán dựa trên email chủ quán
